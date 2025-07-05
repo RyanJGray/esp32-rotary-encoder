@@ -142,6 +142,8 @@ static const uint8_t _ttable_full[TABLE_ROWS][TABLE_COLS] = {
     {F_CCW_NEXT, F_CCW_FINAL, F_CCW_BEGIN, R_START},           // F_CCW_NEXT
 };
 
+static rotary_encoder_callback_t _callback_ptr = NULL;
+
 static uint8_t _process(rotary_encoder_info_t * info)
 {
     uint8_t event = 0;
@@ -188,8 +190,14 @@ static void _isr_rotenc(void * args)
         break;
     }
 
-    if (send_event && info->queue)
+    if (send_event)
     {
+      if (_callback_ptr)
+      {
+        _callback_ptr(&info->state);
+      }
+      if (info->queue)
+      {
         rotary_encoder_event_t queue_event =
         {
             .state =
@@ -204,12 +212,17 @@ static void _isr_rotenc(void * args)
         {
             portYIELD_FROM_ISR();
         }
+      }
     }
 }
 
-esp_err_t rotary_encoder_init(rotary_encoder_info_t * info, gpio_num_t pin_a, gpio_num_t pin_b)
+esp_err_t rotary_encoder_init(rotary_encoder_info_t * info, gpio_num_t pin_a, gpio_num_t pin_b, rotary_encoder_callback_t * callback)
 {
     esp_err_t err = ESP_OK;
+    if (callback)
+    {
+        _callback_ptr = *callback;
+    }
     if (info)
     {
         info->pin_a = pin_a;

@@ -78,6 +78,11 @@ typedef struct
 } rotary_encoder_state_t;
 
 /**
+ * @brief Represents a callback function which is executed when a rotary encoder state change is detected, can be used to allow ESP-ADF projects to handle input due to this executing within an interrupt context.
+ */
+typedef void (*rotary_encoder_callback_t)(rotary_encoder_state_t *);
+
+/**
  * @brief Struct carries all the information needed by this driver to manage the rotary encoder device.
  *        The fields of this structure should not be accessed directly.
  */
@@ -108,7 +113,7 @@ typedef struct
  * @param[in] pin_b GPIO number for rotary encoder output B.
  * @return ESP_OK if successful, ESP_FAIL or ESP_ERR_* if an error occurred.
  */
-esp_err_t rotary_encoder_init(rotary_encoder_info_t * info, gpio_num_t pin_a, gpio_num_t pin_b);
+esp_err_t rotary_encoder_init(rotary_encoder_info_t * info, gpio_num_t pin_a, gpio_num_t pin_b, rotary_encoder_callback_t * callback);
 
 /**
  * @brief Enable half-stepping mode. This generates twice as many counted steps per rotation.
