@@ -80,7 +80,7 @@ typedef struct
 /**
  * @brief Represents a callback function which is executed when a rotary encoder state change is detected, can be used to allow ESP-ADF projects to handle input due to this executing within an interrupt context.
  */
-typedef void (*rotary_encoder_callback_t)(rotary_encoder_state_t *);
+typedef void (*rotary_encoder_callback_t)(volatile rotary_encoder_state_t *);
 
 /**
  * @brief Struct carries all the information needed by this driver to manage the rotary encoder device.
